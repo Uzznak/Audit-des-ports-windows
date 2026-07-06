@@ -18,18 +18,16 @@ Make a script that generates a CSV file containing listening TCP ports.
 - Git
 
 # Instructions
-## 1. Créer le projet
+## 1. Créer le script d'audit
 
-Ouvre PowerShell   
+Dans PowerShell   
 mkdir windows-listening-ports-audit  
 cd windows-listening-ports-audit  
-mkdir scripts  results  doc   
+mkdir scripts  results  docs  
 
-New-Item README.md  
+New-Item README.md 
 New-Item scripts\audit_ports.ps1  
 New-Item docs\recommendations.md  
-
-## 2. Créer le script d'audit
 
 - Ouvrir **notepad scripts\audit_ports.ps1**, écrire :  
 
@@ -40,7 +38,7 @@ Export-Csv ".\results\ports.csv" -NoTypeInformation
 
 - Enregistrer
 
-## 3. Exécuter le script
+## 2. Exécuter le script
 
 .\scripts\audit_ports.ps1  
 Si l'exécution est bloquée :  
@@ -50,7 +48,7 @@ Le fichier sera généré a l'emplacement choisi  **results\ports.csv**
 
 Vérifier les résultats : Afficher le contenu : **Import-Csv .\results\ports.csv** ou **cat .\results\ports.csv**  
 
-## 5. Identifier les services associés aux ports
+## 3. Identifier les services associés aux ports
 Lister les ports :
 
 Get-NetTCPConnection -State Listen |  
