@@ -33,7 +33,7 @@ New-Item docs\recommendations.md
 Créer le fichier / create the file  
 notepad scripts\audit_ports.ps1  
 
-Y insérer / copy paste  :
+Y insérer / copy paste this content :
 
 Get-NetTCPConnection -State Listen |  
 Select-Object LocalAddress, LocalPort |  
