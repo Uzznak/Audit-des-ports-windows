@@ -8,8 +8,8 @@ I did this mini project that follows the procedure I used to audit my ports and 
 
 ## Objectif
 
-Faire un script qui génère un fichier CSV contenant les ports d’écoute TCP.  
-Make a script that generates a CSV file containing listening TCP ports.  
+**FR**: Générer un fichier CSV listant les ports TCP en écoute et fournir une base d’analyse.  
+**EN** : Generate a CSV file listing TCP listening ports and provide a basis for analysis.  
 
 ## Environment
 
@@ -18,85 +18,67 @@ Make a script that generates a CSV file containing listening TCP ports.
 - Git
 
 # Instructions
-## 1. Créer le script d'audit
-  
+## 1. Structure du projet / Project structure  
+
 mkdir windows-listening-ports-audit  
 cd windows-listening-ports-audit  
-mkdir scripts  results  docs  
+mkdir scripts results docs  
 
-New-Item README.md 
+New-Item README.md  
 New-Item scripts\audit_ports.ps1  
 New-Item docs\recommendations.md  
 
-- Ouvrir **notepad scripts\audit_ports.ps1**, écrire :  
+## 2. Script d’audit / Audit script  
+
+Créer le fichier :  
+notepad scripts\audit_ports.ps1  
+
+Y insérer :  
 
 Get-NetTCPConnection -State Listen |  
 Select-Object LocalAddress, LocalPort |  
 Sort-Object LocalPort |  
 Export-Csv ".\results\ports.csv" -NoTypeInformation  
 
-- Enregistrer
-
-## 2. Exécuter le script
+## 3. Exécution / Execution  
 
 .\scripts\audit_ports.ps1  
-Si l'exécution est bloquée :  
-Set-ExecutionPolicy -Scope Process Bypass  
 
-Le fichier sera généré a l'emplacement choisi  **results\ports.csv**
+Si l’exécution est bloquée :  
+*Set-ExecutionPolicy -Scope Process Bypass  
 
-Vérifier les résultats : Afficher le contenu : **Import-Csv .\results\ports.csv** ou **cat .\results\ports.csv**  
+Afficher le contenu :  
+Import-Csv .\results\ports.csv  
+# ou  
+cat .\results\ports.csv  
 
-## 3. Identifier les services associés aux ports
-Lister les ports :
+# Analyse des ports / Port analysis  
 
-Get-NetTCPConnection -State Listen |  
-Sort-Object LocalPort |  
-Format-Table LocalAddress,LocalPort  
+## 🇫🇷 Interpréter les résultats  
+- **135, 139, 445** → Services Windows (RPC, NetBIOS, SMB).  
+  À bloquer sur interface publique.  
+- **80, 443** → Services web.  
+- **22, 3389** → Accès distant (SSH, RDP).  
+  À sécuriser fortement.  
+- **> 49152** → Ports dynamiques Windows.  
+  Généralement sans risque.  
+- Identifier un processus :
 
-###  Analyse des port
+Get-NetTCPConnection -State Listen | Select-Object LocalPort, OwningProcess
 
-**FR**  
-Une fois le fichier CSV généré, analyser les ports :  
-- Les ports 135, 139, 445 : services Windows (RPC/NetBIOS/SMB), à bloquer sur interface publique
-- Les ports 80/443 : services web.  
-- Les ports 22/3389 : accès distant (SSH/RDP), à sécuriser  
-- Les ports > 49152 : ports dynamiques, généralement sans risque
-- Tout port inconnu : identifier le processus avec : 
+## 🇬🇧 Interpreting results  
+- **135, 139, 445** : Windows services (RPC, NetBIOS, SMB).  
+  Block on public interfaces.  
+- **80, 443** : Web services.  
+- **22, 3389** : Remote access (SSH, RDP).  Must be secured.  
+- **> 49152** : Windows dynamic ports.  Usually safe.  
+- Identify the process:
 
-  Get-NetTCPConnection -State Listen | Select-Object LocalPort, OwningProcess
+Get-NetTCPConnection -State Listen | Select-Object LocalPort, OwningProcess
 
-
-**EN**  
-After generating the CSV, analyze the ports:  
-- Ports 135, 139, 445 → Windows services (RPC/NetBIOS/SMB), block on public interfaces.  
-- Ports 80/443 → web services.  
-- Ports 22/3389 → remote access (SSH/RDP), must be secured.  
-- Ports > 49152 → dynamic ports, usually safe.  
-- Unknown ports → identify the process with:  
-
-  Get-NetTCPConnection -State Listen | Select-Object LocalPort, OwningProcess
-
-
-enfin, applique les recommandations conseillées par l'ANSSI 
-
-
-# Compétences / Skills
-
-Administration de Windows  
-PowerShell  
-Sécurité de l’infrastructure  
-Audit de sécurité  
-Git/GitHub  
-
-EN
-Windows Administration  
-PowerShell  
-Infrastructure Security  
-Security Auditing  
-Git/GitHub 
 
 # Sources
 
-https://messervices.cyber.gouv.fr/documents-guides/recommandations-sur-la-s%C3%A9curisation-des-syst%C3%A8mes-de-contr%C3%B4le-d_acces-physique-et-vid%C3%A9oprotection-v2.2.pdf
-
+- ANSSI — Recommandations de sécurité relatives aux services réseau  
+- ANSSI — Guide d’hygiène informatique (https://messervices.cyber.gouv.fr/documents-guides/guide_hygiene_informatique_anssi.pdf)
+- ANSSI — Recommandations de sécurisation des systèmes Windows  
